@@ -4,6 +4,8 @@
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <unistd.h>
+#include <string.h>
+// TODO: add error handling
 int main(int argc, char* argv[]) {
     char buffer[1024] = { 0 };
     if (argc < 2) {
@@ -35,6 +37,7 @@ int main(int argc, char* argv[]) {
         perror("listen failed");
         exit(1);
     }
+    while (1) {
     if((new_socket = accept(server_fd, (struct sockaddr*)NULL, NULL)) < 0) {
         perror("accept failed");
         exit(1);
@@ -42,9 +45,20 @@ int main(int argc, char* argv[]) {
     size_t bytes_read = read(new_socket, buffer, 1024);
     printf("Received: %s\n", buffer);
     // this will either handle a json or HTML response.
-
-    // close socket
+    send(new_socket,
+        "HTTP/1.1 200 OK\r\n"
+        "Content-Type: text/html\r\n"
+        "\r\n"
+        "<html><body><h1>Hello, World!</h1></body></html>",
+        strlen("HTTP/1.1 200 OK\r\n"
+        "Content-Type: text/html\r\n"
+        "\r\n"
+        "<html><body><h1>Hello, World!</h1></body></html>"),
+        0
+    );
     close(new_socket);
+    }
+    // close socket
     close(server_fd);
     return 0;
 }

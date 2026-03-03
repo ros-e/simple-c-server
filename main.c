@@ -15,5 +15,5 @@ int main(int argc, char* argv[]) {
         perror("socket failed");
         exit(1);
     }
-
+    return 0;
 }

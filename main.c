@@ -8,11 +8,18 @@
 // TODO: add error handling
 int main(int argc, char* argv[]) {
     char buffer[1024] = { 0 };
+    int port;
+    port = atoi(argv[1]);
     if (argc < 2) {
         printf("no port dumbass");
         exit(1);
     }
     // add some validation bullshit here sometime
+    // Validation :3
+    if (port < 1 || port > 65535) {
+        printf("invalid port number\n");
+        exit(1);
+    }
     printf("HTTP Server Started on %s\n", argv[1]);
     int server_fd, new_socket;
     struct sockaddr_in address;
@@ -28,7 +35,7 @@ int main(int argc, char* argv[]) {
     }
     address.sin_family = AF_INET;
     address.sin_addr.s_addr = INADDR_ANY;
-    address.sin_port = htons(atoi(argv[1]));
+    address.sin_port = htons(port);
     if(bind(server_fd, (struct sockaddr *)&address, sizeof(address))) {
         perror("bind failed");
         exit(1);
